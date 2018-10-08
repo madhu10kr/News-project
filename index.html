@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+    crossorigin="anonymous">
+
+<title>News</title>
+</head>
+
+<body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <h2>Categories</h2>
+
+            <ul id="list">
+
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <h4>Search news</h4>
+                <div class="wrapper">
+                        <input type="text" id="search" />
+                        <button id="button">GO</button>
+                </div>
+                <div id="1">
+
+                </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var buttonHandle = document.getElementById('button');
+    var selectHandle = document.getElementById('search');
+    axios.get('http://localhost:3000/categories').then(response => {
+        response.data.forEach(element => {
+            document.getElementById('list').innerHTML += `<li><a href="./info.html?category=${element.name}" />${element.name}</li>`;
+        });
+    });
+
+    buttonHandle.addEventListener('click', function () {
+        var data = selectHandle.value;
+        document.getElementById('1').innerHTML = '';
+        axios.get(`https://newsapi.org/v2/everything?q=${data}&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
+
+            if(response.data.articles.length == 0) {
+                document.getElementById('1').innerHTML = 'no results found'
+            }else {
+                response.data.articles.forEach(obj => {
+                    if(obj.content && obj.description && obj.author) {
+                        document.getElementById('1').innerHTML += `<h2>${obj.title}</h2>
+                    <p>${obj.description}</p>
+                    <h5>author-${obj.author}</h5>
+                    <span>published-${obj.publishedAt}</span>
+                    </br>
+                    <a href=${obj.url}>source</a>
+                    </br>
+                    <span>********************************************************************************</span>
+                    `;
+                    }
+                })
+            }
+        })
+        .catch(err => console.log(err));
+
+    }, false);
+
+
+// axios.get('http://localhost:3000/categories').then(response => {
+//     response.data.forEach(element => {
+//         document.getElementById('list').innerHTML += `<li><a href='https://newsapi.org/v2/top-headlines?country=in&category=${element.name}&apiKey=50e882813195499e9ede9b69920fe664'/>${element.name}</li>`;
+//     });
+// });
+
+
+</script>
+
+</body>
+
+</html>

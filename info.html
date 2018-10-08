@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+
+    <title>Document</title>
+</head>
+<body>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        
+    <h1 id="h1"></h1>
+    <div id="app" class="container">
+        
+    </div>
+
+    <script>
+        //console.log(location.search)
+    
+            axios.get(`https://newsapi.org/v2/top-headlines${location.search}&country=in&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
+                console.log(response.data.articles)
+                document.getElementById('h1').innerHTML = `${location.search.slice(10).toUpperCase()}-NEWS`
+
+                response.data.articles.forEach(obj => {
+                    if(obj.content && obj.description && obj.author) {
+                        document.getElementById('app').innerHTML += `<h2>${obj.title}</h2>
+                    <p>${obj.description}</p>
+                    <h5>author-${obj.author}</h5>
+                    <span>published-${obj.publishedAt}</span>
+                    </br>
+                    <a href=${obj.url}>source</a>
+                    </br>
+                    <span>********************************************************************************</span>
+                    `;
+                    }
+                })
+            }).catch(err => console.log(err));
+        
+
+    </script>
+</body>
+</html>
