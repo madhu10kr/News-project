@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
 
-    <title>Document</title>
+    <title>News details</title>
 </head>
 <body>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -18,26 +18,38 @@
     </div>
 
     <script>
+        let checkHandle = document.getElementById('checkbox');
         //console.log(location.search)
     
             axios.get(`https://newsapi.org/v2/top-headlines${location.search}&country=in&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
-                console.log(response.data.articles)
+                //console.log(response.data.articles)
                 document.getElementById('h1').innerHTML = `${location.search.slice(10).toUpperCase()}-NEWS`
 
                 response.data.articles.forEach(obj => {
                     if(obj.content && obj.description && obj.author) {
-                        document.getElementById('app').innerHTML += `<h2>${obj.title}</h2>
-                    <p>${obj.description}</p>
+                        document.getElementById('app').innerHTML += `<h4><a href=${obj.url}>${obj.title}</a></h4>
+                    <p>${obj.description}<a href=${obj.url}>Read more...</a></p>
                     <h5>author-${obj.author}</h5>
                     <span>published-${obj.publishedAt}</span>
                     </br>
-                    <a href=${obj.url}>source</a>
+                    <input type="checkbox" id="checkbox" onchange="onChangeHandler(this)" value=${obj.url}>bookmark</input>
                     </br>
                     <span>********************************************************************************</span>
                     `;
                     }
                 })
             }).catch(err => console.log(err));
+
+            function onChangeHandler(obj){
+                 axios.post('http://localhost:3000/users/bookmarks',{value1:obj.value},{headers: {'x-auth': window.localStorage.getItem('auth')}});
+            }
+
+            // checkHandle.addEventListener('click',function(e) {
+            //     console.log(e.target.value);
+            //     // axios.post('http://localhost:3000/users/bookmarks',data1,{headers: {'x-auth': window.localStorage.getItem('auth')}});
+            // },false);
+
+
         
 
     </script>

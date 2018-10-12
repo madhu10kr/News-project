@@ -1,12 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>MyAccount</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+    crossorigin="anonymous">
 </head>
+
 <body>
-    
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <form id="formLogin">
+          <h2>Login Form</h2>
+          <label>Enter Your Email</label>
+          <div>
+            <input type="text" id="textId" name="name" />
+          </div>
+          <label>Enter Your Password</label>
+          <div>
+            <input type="password" name="name" class="mb-2">
+          </div>
+          <div>
+            <input type="button" id="buttonId" value="Login" class="btn btn-primary" />
+          </div>
+      </div>
+      </form>
+      <div class="col-md-6">
+        <form id="signup" name="signup">
+          <h2>Registration Form</h2>
+          <label>Name</label>
+          <div>
+            <input type="text" id="texId1" name="name" />
+            <span id="nameSpan" style="color:red"></span>
+          </div>
+          <label>Email</label>
+          <div>
+            <input type="email" id="emailId" name="name" />
+            <span id="emailSpan" style="color:red"></span>
+          </div>
+          <label>Mobile Number</label>
+          <div>
+            <input type="number" name="name" id="mobileId" />
+          </div>
+          <label>Password</label>
+          <div>
+            <input type="password" name="name" id="passwordId" class="mb-2" />
+            <span style="color:red" id="passwordSpan"></span>
+          </div>
+          <div>
+            <input type="button" id="buttonId1" value="Signup" class="btn btn-primary" /> or <input type="reset" class="btn btn-outline-warning" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="./register.js"></script>
 </body>
+
 </html>

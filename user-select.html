@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Select category</title>
+
+    <script src="js/react.development.js"></script>
+    <script src="js/react-dom.development.js"></script>
+    <script src="js/babel.js"></script>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+    <script type="text/babel">
+            const rootHandle = document.getElementById('root');
+            let array = [];
+            let message = '';
+            let data1 = {
+                value: array
+            }
+
+
+            function selectedDetails(e) {
+                if(!array.includes(e.target.value)){
+                    message = '';
+                    array.push(e.target.value);
+                console.log(array);
+                }else {
+                    message = '';
+                    let index = array.indexOf(e.target.value);
+                    array.splice(index,1);
+                    console.log(array);
+                }
+                renderDom();
+            };
+
+
+            function saveDetails() {
+                if(array.length == 0) {
+                    message = 'select any one category';
+                    renderDom();
+                }else {
+                    console.log(window.localStorage.getItem('auth'));
+                     axios.post('http://localhost:3000/users/categories',data1,{headers: {'x-auth': window.localStorage.getItem('auth')}});
+                     console.log(array);
+                     window.location=('file:///home/khalid/Documents/project/index.html')
+                }
+            };
+
+
+            function renderDom() {
+            axios.get('http://localhost:3000/categories').then(response => {
+                    const div = (
+                        <div>
+                        <h2>Select Categories</h2>
+                        <ul>
+                        {response.data.map((category,i) => <li key={i}><input type="checkbox" value={category.name} onClick={selectedDetails}/>{category.name}</li>)}
+                        </ul>
+                        <button onClick={saveDetails}>Submit</button>
+                        <span>{message}</span>
+                        </div>
+                    );
+                ReactDOM.render(div,rootHandle);
+            });
+            }
+            renderDom();
+
+        </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</body>
+
+</html>

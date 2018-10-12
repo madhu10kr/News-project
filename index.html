@@ -57,12 +57,12 @@
             }else {
                 response.data.articles.forEach(obj => {
                     if(obj.content && obj.description && obj.author) {
-                        document.getElementById('1').innerHTML += `<h2>${obj.title}</h2>
-                    <p>${obj.description}</p>
+                        document.getElementById('1').innerHTML += `<h4><a href=${obj.url}>${obj.title}</a></h4>
+                    <p>${obj.description}<a href=${obj.url}>Read more...</a></p>
                     <h5>author-${obj.author}</h5>
                     <span>published-${obj.publishedAt}</span>
                     </br>
-                    <a href=${obj.url}>source</a>
+                    <input type="checkbox" id="checkbox" onchange="onChangeHandler(this)" value=${obj.url}>bookmark</input>
                     </br>
                     <span>********************************************************************************</span>
                     `;
@@ -73,6 +73,10 @@
         .catch(err => console.log(err));
 
     }, false);
+
+    function onChangeHandler(obj){
+         axios.post('http://localhost:3000/users/bookmarks',{value1:obj.value},{headers: {'x-auth': window.localStorage.getItem('auth')}});
+    }
 
 
 // axios.get('http://localhost:3000/categories').then(response => {

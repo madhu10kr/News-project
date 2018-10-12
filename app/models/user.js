@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 
@@ -33,7 +35,11 @@ const userSchema = new Schema ({
         message: 'should be 10 digits'
     },
     bookmarks: [ String ],
-    categories: [ Schema.Types.ObjectId ],
+    categories: [String],
+    role:{
+        type: String,
+        enum: ['admin','customer']
+    },
     tokens: [{
         
             access: {
@@ -48,6 +54,49 @@ const userSchema = new Schema ({
     }]
 });
 
+userSchema.pre('save',function(next) {
+    let user = this;
+    if(user.isModified('password')) {
+        bcrypt.genSalt(10)
+        .then((salt) => {
+            bcrypt.hash(user.password,salt)
+            .then((hashedPassword) => {
+                user.password = hashedPassword;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
+
+
+userSchema.methods.generateToken = function() {
+    let tokenData = {
+        _id: this._id
+    };
+    
+    let generatedTokenInfo = {
+        access: 'auth',
+        token: jwt.sign(tokenData, 'supersecret')
+    }
+
+    this.tokens.push(generatedTokenInfo);
+    return this.save().then((user) => {
+        return generatedTokenInfo.token;
+    });
+};
+
+userSchema.statics.findByToken = function(token) {
+    let User = this;
+    let tokenData;
+    try {
+        tokenData = jwt.verify(token, 'supersecret')
+    } catch(e) {
+        return Promise.reject(e);
+    }
+    return User.findOne({ '_id': tokenData._id, 'tokens.token': token })
+}
 
 
 const User = mongoose.model('User',userSchema);
