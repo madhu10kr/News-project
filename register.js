@@ -67,10 +67,10 @@ signupButtonHandle.addEventListener('click', (e) => {
     }
 
     axios.post('http://localhost:3000/users/register', formData).then((response) => {
-      console.log((response.data.tokens[0].token));
+      console.log((response.data.tokens['0'].token));
       if(!response.data.errors) {
-        window.localStorage.setItem('auth',response.data.tokens[0].token);
-        window.location=('file:///home/khalid/Documents/project/user-select.html')
+        window.localStorage.setItem('auth',response.data.tokens['0'].token);
+        window.location=('file:///C:/full-stack-mern-june/News-project/user-select.html')
       }
     }).catch(err => {
       console.log(err)

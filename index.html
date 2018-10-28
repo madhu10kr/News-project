@@ -16,14 +16,19 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
+                <h2>Selected Categories</h2>
+
+                <ul id="list1">
+    
+                </ul>
             <h2>Categories</h2>
 
             <ul id="list">
 
             </ul>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <h4>Search news</h4>
                 <div class="wrapper">
                         <input type="text" id="search" />
@@ -32,6 +37,7 @@
                 <div id="1">
 
                 </div>
+                <b id="b"></b>
         </div>
     </div>
 </div>
@@ -41,33 +47,66 @@
 <script>
     var buttonHandle = document.getElementById('button');
     var selectHandle = document.getElementById('search');
+    let arr;
+    let count = 1;
+
+    axios.get('http://localhost:3000/users/categories',{headers: {'x-auth': window.localStorage.getItem('auth')}}).then(response => {
+        response.data.forEach(element => {
+            document.getElementById('list1').innerHTML += `<li><a href="./info.html?category=${element}" />${element}</li>`;
+        });
+
+        axios.get(`https://newsapi.org/v2/everything?q=${response.data[0]}&apiKey=50e882813195499e9ede9b69920fe664`).then(response1 => {
+            arr = response1.data.articles;
+            generate();
+        });
+    });
+
+
     axios.get('http://localhost:3000/categories').then(response => {
         response.data.forEach(element => {
             document.getElementById('list').innerHTML += `<li><a href="./info.html?category=${element.name}" />${element.name}</li>`;
         });
     });
 
-    buttonHandle.addEventListener('click', function () {
-        var data = selectHandle.value;
-        document.getElementById('1').innerHTML = '';
-        axios.get(`https://newsapi.org/v2/everything?q=${data}&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
+    
+    
 
-            if(response.data.articles.length == 0) {
-                document.getElementById('1').innerHTML = 'no results found'
-            }else {
-                response.data.articles.forEach(obj => {
-                    if(obj.content && obj.description && obj.author) {
+        function generate() {
+            for(let i=0+5*(count-1);i<5*(count);i++) {
+                if(5*count > arr.length) {
+                    document.getElementById('b').innerHTML = 'sorry no news'
+                }
+
+                let obj = arr[i];
+                     if(obj.content && obj.description && obj.author) {
                         document.getElementById('1').innerHTML += `<h4><a href=${obj.url}>${obj.title}</a></h4>
                     <p>${obj.description}<a href=${obj.url}>Read more...</a></p>
                     <h5>author-${obj.author}</h5>
                     <span>published-${obj.publishedAt}</span>
                     </br>
                     <input type="checkbox" id="checkbox" onchange="onChangeHandler(this)" value=${obj.url}>bookmark</input>
+                    <a href="http://www.facebook.com/sharer.php?u=https://simplesharebuttons.com" target="_blank">
+                    <img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" />
+                    </a>
                     </br>
+                    <img src=${obj.urlToImage} >
                     <span>********************************************************************************</span>
                     `;
                     }
-                })
+            }
+            document.getElementById('1').innerHTML += `<button onclick="generate()">Next</button>`;
+            count++;
+        }
+
+    buttonHandle.addEventListener('click', function () {
+        var data = selectHandle.value;
+        document.getElementById('1').innerHTML = '';
+        axios.get(`https://newsapi.org/v2/everything?q=${data}&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
+            if(response.data.articles.length == 0) {
+                document.getElementById('1').innerHTML = 'no results found'
+            }else {
+                arr = response.data.articles;
+                generate();
             }
         })
         .catch(err => console.log(err));
@@ -84,6 +123,7 @@
 //         document.getElementById('list').innerHTML += `<li><a href='https://newsapi.org/v2/top-headlines?country=in&category=${element.name}&apiKey=50e882813195499e9ede9b69920fe664'/>${element.name}</li>`;
 //     });
 // });
+
 
 
 </script>

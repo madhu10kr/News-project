@@ -7,8 +7,12 @@ const {authenticateUser} = require('../middlewares/authentication');
 
 
 router.get('/mainpage',(req,res) => {
-    console.log('dfaf')
     res.sendFile('../../index.html');
+});
+
+router.get('/categories',authenticateUser,(req,res) => {
+    let user = req.locals.user;
+    res.send(user.categories);
 });
 
 router.post('/categories',authenticateUser,(req,res) => {
@@ -17,7 +21,7 @@ router.post('/categories',authenticateUser,(req,res) => {
     //console.log(typeof(categoryArray))
     user.categories.push(...categoryArray);
     user.save().then(data => {
-        console.log(data);
+        res.send(data);
     }).catch(err => console.log(err));
 });
 

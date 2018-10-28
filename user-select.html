@@ -46,9 +46,12 @@
                     renderDom();
                 }else {
                     console.log(window.localStorage.getItem('auth'));
-                     axios.post('http://localhost:3000/users/categories',data1,{headers: {'x-auth': window.localStorage.getItem('auth')}});
-                     console.log(array);
-                     window.location=('file:///home/khalid/Documents/project/index.html')
+                     axios.post('http://localhost:3000/users/categories',data1,{headers: {'x-auth': window.localStorage.getItem('auth')}}).then(response => {
+                         if(response.data){
+                        window.location=('file:///C:/full-stack-mern-june/News-project/index.html')
+                         }
+                     })
+                    // window.location=('file:///C:/full-stack-mern-june/News-project/index.html')
                 }
             };
 

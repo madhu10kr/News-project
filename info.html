@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        button.a {
+            text-align: right;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -16,28 +21,64 @@
     <div id="app" class="container">
         
     </div>
+    <button class="a" onclick="generate()">Next</button>
+    <b id="b"></b>
 
     <script>
         let checkHandle = document.getElementById('checkbox');
-        //console.log(location.search)
-    
-            axios.get(`https://newsapi.org/v2/top-headlines${location.search}&country=in&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
-                //console.log(response.data.articles)
-                document.getElementById('h1').innerHTML = `${location.search.slice(10).toUpperCase()}-NEWS`
+        let arr;
+        let count = 1;
+        //console.log(location.search);
 
-                response.data.articles.forEach(obj => {
-                    if(obj.content && obj.description && obj.author) {
+
+        function generate() {
+            for(let i=0+5*(count-1);i<5*(count);i++) {
+                if(5*count > arr.length) {
+                    document.getElementById('b').innerHTML = 'sorry no news'
+                }
+
+                let obj = arr[i];
+                     if(obj.content && obj.description && obj.author) {
                         document.getElementById('app').innerHTML += `<h4><a href=${obj.url}>${obj.title}</a></h4>
                     <p>${obj.description}<a href=${obj.url}>Read more...</a></p>
                     <h5>author-${obj.author}</h5>
                     <span>published-${obj.publishedAt}</span>
                     </br>
                     <input type="checkbox" id="checkbox" onchange="onChangeHandler(this)" value=${obj.url}>bookmark</input>
+                    <a href="http://www.facebook.com/sharer.php?u=https://simplesharebuttons.com" target="_blank">
+                    <img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" />
+                    </a>
                     </br>
+                    <img src=${obj.urlToImage} >
                     <span>********************************************************************************</span>
                     `;
                     }
-                })
+            }
+            count++;
+        }
+    
+            axios.get(`https://newsapi.org/v2/top-headlines${location.search}&country=in&apiKey=50e882813195499e9ede9b69920fe664`).then(response => {
+                document.getElementById('h1').innerHTML = `${location.search.slice(10).toUpperCase()}-NEWS`
+
+                arr = response.data.articles;
+                generate();
+
+
+
+                // response.data.articles.forEach(obj => {
+                //     if(obj.content && obj.description && obj.author) {
+                //         document.getElementById('app').innerHTML += `<h4><a href=${obj.url}>${obj.title}</a></h4>
+                //     <p>${obj.description}<a href=${obj.url}>Read more...</a></p>
+                //     <h5>author-${obj.author}</h5>
+                //     <span>published-${obj.publishedAt}</span>
+                //     </br>
+                //     <input type="checkbox" id="checkbox" onchange="onChangeHandler(this)" value=${obj.url}>bookmark</input>
+                //     </br>
+                //     <img src=${obj.urlToImage} >
+                //     <span>********************************************************************************</span>
+                //     `;
+                //     }
+                // })
             }).catch(err => console.log(err));
 
             function onChangeHandler(obj){
