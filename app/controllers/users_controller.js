@@ -51,6 +51,36 @@ router.post('/register', (req, res) => {
     });
 });
 
+//login route
+router.post('/login',(req,res) => {
+    let body = _.pick(req.body,['email','password']);
+    User.findByEmailAndPassword(body.email,body.password)
+    .then((user) => {
+        return user.generateToken();
+    }) .then((token) => {
+        res.header('x-auth',token).send()
+    })
+    .catch((err) => {
+        res.send(err);
+    });
+});
+
+
+//logout
+router.delete('/logout',authenticateUser,(req,res) => {
+    req.locals.user.deleteToken(req.locals.token).then(() => {
+        res.send();
+    }) .catch((err) => {
+        res.send(err);
+    });
+    // User.findByIdAndUpdate({_id : req.locals.user},{$pull : {tokens : req.locals.token} }, {new : true})
+    // .then((user) => {
+    //     res.send(user);
+    // }) .catch((err) => {
+    //     res.send(err);
+    // });
+});
+
 
 module.exports = {
     usersController:router

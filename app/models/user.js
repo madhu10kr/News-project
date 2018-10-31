@@ -96,6 +96,32 @@ userSchema.statics.findByToken = function(token) {
         return Promise.reject(e);
     }
     return User.findOne({ '_id': tokenData._id, 'tokens.token': token })
+};
+
+userSchema.statics.findByEmailAndPassword = function(email,password){
+    let User = this;
+    return User.findOne({email : email})
+    .then((user) => {
+        if(!user) {
+            return Promise.reject('email not found');
+        }
+        return bcrypt.compare(password,user.password) .then((res) => {
+            if(res) {
+                return user;
+            } else {
+                return Promise.reject('invalid password');
+            }
+        });
+    })
+}
+
+userSchema.methods.deleteToken = function(userToken){
+    let user = this;
+    let findToken = user.tokens.find((token) => {
+        return token.token == userToken;
+    });
+    user.tokens.remove(findToken._id);
+    return user.save();
 }
 
 
